@@ -1,0 +1,43 @@
+@import url("../../fonts/noto-serif/noto-serif.css");
+@import url("../../fonts/open-sans/open-sans.css");
+@import url("../../fonts/hack/hack.css");
+
+a.slide {
+  font-family: "Noto Serif";
+  font-size: 1.4em;
+  color: rgb(80 90 100);
+  line-height: 1;
+  text-align: justify;
+
+  background-image: linear-gradient(to bottom, rgb(243 243 243)   0%,
+                                               rgb(255 255 255)  15%,
+                                               rgb(255 255 255)  85%,
+                                               rgb(243 243 243) 100%);
+}
+
+a.slide::after {
+  content: counter(slide-number) var(--of-n-slides);
+  counter-increment: slide-number;
+  font-family: "Hack";
+  font-size: .75em;
+  color: rgb(190 190 190);
+  position: absolute;
+  bottom: 2.25em;
+  right: 3.75em;
+  line-height: 1.9;
+}
+
+.slide.inverse {
+  color: rgb(80 90 100);
+  background-image: linear-gradient(to bottom, rgb(62 67 72)   0%,
+                                               rgb(70 75 80)  15%,
+                                               rgb(70 75 80)  85%,
+                                               rgb(62 67 72) 100%);
+}
+
+h1, h2, h3, header {
+  margin: 0px;
+  text-align: start;
+  font-family: "Open Sans";
+}
+

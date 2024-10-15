@@ -1,0 +1,26 @@
+@page {
+  size: 1280px 960px;
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  font-size: calc(960px * 0.025);
+}
+
+a.slide {
+  position: relative;
+
+  width:  calc(1280px - 3.75em - 3.75em);
+  height: calc(960px - 3.75em - 3.75em);
+
+  padding-left:   3.75em;
+  padding-right:  3.75em;
+  padding-bottom: 3.75em;
+  padding-top:    3.75em;
+
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: max(calc(100vh - 960px), 0px);
+  margin-top: 0px;
+}

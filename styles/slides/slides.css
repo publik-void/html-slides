@@ -1,0 +1,32 @@
+html {
+  background-color: black;
+}
+
+body {
+  --of-n-slides: attr(data-of-n-slides string, "");
+
+  /* NOTE: `attr` is still experimental and some browsers don't support it.
+   * `--of-n-slides` can be set directly in CSS instead, e.g. in a `<style>` tag
+   * or in a CSS file like this: */
+  /* --of-n-slides: "/5"; */
+
+  counter-reset: slide-number;
+
+  display: block;
+  margin: 0px;
+  background-color: transparent;
+}
+
+.hide-cursor {
+  cursor: none;
+}
+
+a.slide {
+  break-after: page;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
