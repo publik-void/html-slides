@@ -43,32 +43,36 @@ HtmlSlides.control.scrollAnchors = function(offset) {
   }
 }
 
-document.body.addEventListener("keydown", function (e) {
-  const keyCode = e.keyCode;
-  let offset = 0;
-  if (keyCode == 37) { // left
-    offset = -1;
-  }
-  else if (keyCode == 39) { // right
-    offset = 1;
-  }
+HtmlSlides.control.setup = function() {
+  document.addEventListener("keydown", function (e) {
+    const keyCode = e.keyCode;
+    let offset = 0;
+    if (keyCode == 37) { // left
+      offset = -1;
+    }
+    else if (keyCode == 39) { // right
+      offset = 1;
+    }
 
-  if (offset != 0) {
-    HtmlSlides.control.scrollAnchors(offset);
-    setTimeout(function () {
-      document.body.classList.add("hide-cursor");
-    }, 250);
-  }
-});
+    if (offset != 0) {
+      HtmlSlides.control.scrollAnchors(offset);
+      setTimeout(function () {
+        document.body.classList.add("hide-cursor");
+      }, 250);
+    }
+  });
 
-document.body.addEventListener("mousemove", function (e) {
-  document.body.classList.remove("hide-cursor");
-});
+  document.addEventListener("mousemove", function (e) {
+    document.body.classList.remove("hide-cursor");
+  });
 
-// document.body.addEventListener("keydown", function (e) {
-//   const keyCode = e.keyCode;
-//   if (keyCode == 13) { // enter
-//     console.log(`width: ${window.innerWidth}, height: ${window.innerHeight}`);
-//   }
-// });
+  // document.body.addEventListener("keydown", function (e) {
+  //   const keyCode = e.keyCode;
+  //   if (keyCode == 13) { // enter
+  //     console.log(`width: ${window.innerWidth}, height: ${window.innerHeight}`);
+  //   }
+  // });
+}
+
+HtmlSlides.control.setup()
 
