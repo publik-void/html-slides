@@ -3,30 +3,88 @@ html {
 }
 
 body {
-  --of-n-slides: attr(data-of-n-slides string, "");
-
-  /* NOTE: `attr` is still experimental and some browsers don't support it.
-   * `--of-n-slides` can be set directly in CSS instead, e.g. in a `<style>` tag
-   * or in a CSS file like this: */
-  /* --of-n-slides: "/5"; */
-
-  counter-reset: slide-number;
+  counter-reset: slide-number 0;
 
   display: block;
   margin: 0px;
   background-color: transparent;
 }
 
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+h2 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+}
+
+:not(div.slide.thanks) > h2 {
+  position: absolute;
+}
+
 .hide-cursor {
   cursor: none;
 }
 
-a.slide {
+div.slide {
   break-after: page;
-
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-evenly;
+  align-items: stretch;
   overflow: hidden;
+
+  counter-increment: slide-number;
+}
+
+div.slide.title {
+  justify-content: space-between;
+  align-items: center;
+}
+
+div.slide.image-fill {
+  display: block flow-root;
+}
+
+div.slide.image-fill > img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+div.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+div.row > * {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+div.col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+div.col > * {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 

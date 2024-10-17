@@ -1,6 +1,6 @@
 var HtmlSlides = HtmlSlides || {};
 
-HtmlSlides.control = {}
+HtmlSlides.control = {};
 
 // A true mod function.
 // Works for integer inputs and y > 0. Probably improvable.
@@ -8,7 +8,7 @@ HtmlSlides.control.mod = function(x, y) {
   if (x >= 0) {
     return x % y;
   } else {
-    let a = y + x % y;
+    const a = y + x % y;
     if (a == y) {
       return 0;
     } else {
@@ -17,62 +17,70 @@ HtmlSlides.control.mod = function(x, y) {
   }
 }
 
-HtmlSlides.control.scrollAnchors = function(offset) {
-  let anchors = document.anchors;
-  const n = anchors.length;
+HtmlSlides.control.createSlideAnchors = function() {
+  const divs = document.querySelectorAll('div.slide');
 
-  if (n > 0) {
-    const loc = window.location.href.replace(/#.*/,"");
-    const anchorName = window.location.hash.replace(/#/,"");
-    let nextAnchorName;
+  const anchors = [];
 
-    if (anchorName) {
-      for (let i = 0; i < n; i++) {
-        if (anchors[i].name == anchorName) {
-          nextAnchorName = anchors[HtmlSlides.control.mod(i + offset, n)].name;
-          break;
-        }
+  divs.forEach((div, i) => {
+    const anchor = document.createElement('a');
+
+    div.parentNode.insertBefore(anchor, div);
+    anchor.appendChild(div);
+
+    anchor.id = (i + 1).toString();
+
+    anchors.push(anchor);
+  });
+
+  // console.log(anchors);
+  return anchors;
+}
+
+HtmlSlides.control.scrollAnchors = function(n_slides, offset) {
+  if (n_slides > 0) {
+    fragment = window.location.hash;
+    let i = 1;
+    if (fragment.startsWith("#")) {
+      i = parseInt(fragment.substring(1));
+      if (isNaN(i)) {
+        i = 1;
       }
     }
 
-    if (!nextAnchorName) {
-      nextAnchorName = anchors[Math.min(1, n - 1)].name;
-    }
+    i_next = (HtmlSlides.control.mod(i - 1 + offset, n_slides) + 1);
 
-    window.location.href = loc + "#" + nextAnchorName;
+    window.location.hash = "#" + i_next;
   }
 }
 
 HtmlSlides.control.setup = function() {
-  document.addEventListener("keydown", function (e) {
-    const keyCode = e.keyCode;
-    let offset = 0;
-    if (keyCode == 37) { // left
-      offset = -1;
-    }
-    else if (keyCode == 39) { // right
-      offset = 1;
-    }
+  document.addEventListener("DOMContentLoaded", function() {
+    const anchors = HtmlSlides.control.createSlideAnchors();
+    HtmlSlides.control.n_slides = anchors.length;
 
-    if (offset != 0) {
-      HtmlSlides.control.scrollAnchors(offset);
-      setTimeout(function () {
-        document.body.classList.add("hide-cursor");
-      }, 250);
-    }
+    document.addEventListener("keydown", function(e) {
+      let offset = 0;
+      if (e.key == "ArrowLeft") {
+        offset = -1;
+      }
+      else if (e.key == "ArrowRight") {
+        offset = 1;
+      }
+
+      if (offset != 0) {
+        HtmlSlides.control.scrollAnchors(HtmlSlides.control.n_slides, offset);
+        setTimeout(function () {
+          document.body.classList.add("hide-cursor");
+        }, 250);
+      }
+    });
+
+    document.addEventListener("mousemove", function() {
+      document.body.classList.remove("hide-cursor");
+    });
   });
-
-  document.addEventListener("mousemove", function (e) {
-    document.body.classList.remove("hide-cursor");
-  });
-
-  // document.body.addEventListener("keydown", function (e) {
-  //   const keyCode = e.keyCode;
-  //   if (keyCode == 13) { // enter
-  //     console.log(`width: ${window.innerWidth}, height: ${window.innerHeight}`);
-  //   }
-  // });
 }
 
-HtmlSlides.control.setup()
+HtmlSlides.control.setup();
 
