@@ -50,7 +50,7 @@ div.slide.image-fill {
   display: block flow-root;
 }
 
-div.slide.image-fill > img {
+div.slide.image-fill > img, div.slide.image-fill > div {
   height: 100%;
   width: 100%;
   object-fit: contain;

@@ -71,7 +71,7 @@ h1 {
   width: 90%;
   /* TODO: For some reason, using `em`/`rem`/`%` for the font-size does not
    * scale the font as expected on resizing the window */
-  font-size: 5.5vh;
+  font-size: 6.0vh;
   text-align: center;
 }
 
@@ -229,11 +229,9 @@ ul, menu, dir {
   list-style-type: disc;
 }
 
-li > ul > li
-
 li::marker {
   color: rgb(190, 190, 190);
-  /* font-family: "Hack" */
+  /* font-family: "Hack"; */
 }
 
 div.inverse li::marker {
@@ -243,6 +241,21 @@ div.inverse li::marker {
 /* ul li::marker { */
 /*   content: "\00b7"; /1* "·" *1/ */
 /* } */
+
+/* NOTE: This is the `hence` class applied to the whole list. Applying it to a
+ * single list item is not straightforward as long as Safari does not fully
+ * support the `marker` pseudo-class. */
+ul.hence {
+  list-style-type: "\2192  ";
+}
+
+ul.hence li {
+  /* padding-left: 0.25em; */
+}
+
+ul.hence li::marker {
+  font-family: "Hack";
+}
 
 /* li.hence::marker { */
 /*   content: "\2192"; /1* "→" *1/ */
@@ -359,7 +372,7 @@ table tr:nth-of-type(even) td {
 .gantt-chart g.task rect {
   stroke: var(--border-color);
   stroke-thickness: var(--border-thickness);
-  rx: 0.4em;
+  rx: 0.2em;
 }
 
 .gantt-chart g.task text {
