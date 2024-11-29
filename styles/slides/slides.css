@@ -1,5 +1,13 @@
 html {
   background-color: black;
+
+  /* These properties can be set to other values to make font rendering look
+   * more similar between browsers, but I would like to use subpixel
+   * antialiasing and font synthesis, so I'll have to accept the browser
+   * differences instead, I guess. */
+  -webkit-font-smoothing: subpixel-antialiased;
+  font-synthesis: weight style small-caps;
+  text-rendering: optimizeLegibility;
 }
 
 body {
@@ -50,7 +58,9 @@ div.slide.image-fill {
   display: block flow-root;
 }
 
-div.slide.image-fill > img, div.slide.image-fill > div {
+div.slide.image-fill > img,
+  div.slide.image-fill > div,
+  div.slide.image-fill > object {
   height: 100%;
   width: 100%;
   object-fit: contain;

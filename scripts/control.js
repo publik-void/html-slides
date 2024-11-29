@@ -1,3 +1,5 @@
+"use strict";
+
 var HtmlSlides = HtmlSlides || {};
 
 HtmlSlides.control = {};
@@ -39,7 +41,7 @@ HtmlSlides.control.createSlideAnchors = function() {
 
 HtmlSlides.control.scrollAnchors = function(n_slides, offset) {
   if (n_slides > 0) {
-    fragment = window.location.hash;
+    let fragment = window.location.hash;
     let i = 1;
     if (fragment.startsWith("#")) {
       i = parseInt(fragment.substring(1));
@@ -48,7 +50,7 @@ HtmlSlides.control.scrollAnchors = function(n_slides, offset) {
       }
     }
 
-    i_next = (HtmlSlides.control.mod(i - 1 + offset, n_slides) + 1);
+    let i_next = (HtmlSlides.control.mod(i - 1 + offset, n_slides) + 1);
 
     window.location.hash = "#" + i_next;
   }
