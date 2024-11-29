@@ -365,8 +365,12 @@ table tr:nth-of-type(even) td {
   stroke-width: var(--border-thickness);
 }
 
-.gantt-chart g.group-backgrounds rect {
-  opacity: .1;
+.gantt-chart g.group-backgrounds g.past rect {
+  opacity: .15;
+}
+
+.gantt-chart g.group-backgrounds g.future rect {
+  opacity: .075;
 }
 
 .gantt-chart g.task rect {
