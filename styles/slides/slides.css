@@ -30,7 +30,7 @@ h2 {
   margin-inline-end: 0;
 }
 
-:not(div.slide.thanks) > h2 {
+:not(div.slide.section) > h2 {
   position: absolute;
 }
 

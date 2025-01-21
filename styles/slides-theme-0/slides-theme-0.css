@@ -2,13 +2,16 @@
 @import url("../../fonts/open-sans/open-sans.css");
 @import url("../../fonts/hack/hack.css");
 
+/* TODO: Maybe separate some of the recurrent, currently hard-coded colors out
+ * into variables */
+
 :root {
   --of-slides: "/";
   --text-color: rgb(80 90 100);
   --text-color-inverse: rgb(80 90 100);
   --border-color: rgb(215 215 215);
   --border-color-inverse: rgb(222 222 222);
-  --border-thickness: 0.075em;
+  --border-thickness: 0.15em;
   --heading-color: rgb(70 70 70);
   --heading-color-inverse: rgb(165 165 170);
   --grid-line-color: rgba(0 0 0);
@@ -55,7 +58,7 @@ div.slide.inverse::after {
   color: rgb(100 105 110);
 }
 
-div.slide.thanks {
+div.slide.section {
   text-align: center;
   align-items: center;
 }
@@ -79,11 +82,11 @@ h2 {
   font-size: 210%;
 }
 
-:not(div.slide.thanks) > h2 {
+:not(div.slide.section) > h2 {
   top: 7.5%;
 }
 
-div.slide.thanks > h2 {
+div.slide.section > h2 {
   width: 100%;
   text-align: center;
 }
@@ -294,10 +297,6 @@ ol.upperalpha {
   suffix: "";
 }
 
-img.profile-photo, object.img.profile-photo {
-  border-radius: 20%;
-}
-
 img.framed, object.img.framed {
   border: var(--border-thickness) solid var(--border-color);
   border-radius: 0.5em;
@@ -305,6 +304,10 @@ img.framed, object.img.framed {
 
 div.inverse img.framed, div.inverse object.img.framed {
   border-color: var(--border-color-inverse);
+}
+
+img.profile-photo, object.img.profile-photo {
+  border-radius: 20%;
 }
 
 table {
@@ -317,7 +320,7 @@ table th, table td {
 }
 
 table, table th, table td {
-  border: solid var(--border-thickness) var(--border-color);
+  border: solid .075em var(--border-color);
 }
 
 div.inverse table, div.inverse table th, div.inverse table td {
@@ -352,6 +355,14 @@ table tr:nth-of-type(even) td {
   background-image: linear-gradient(to bottom, rgb(238 238 241)   0%,
                                                rgb(247 247 250)  25%,
                                                rgb(247 247 250) 100%);
+}
+
+hr {
+  width: 100%;
+  height: .3rem;
+  border: none;
+  border-radius: .15rem;
+  background: rgb(190, 190, 190);
 }
 
 .gantt-chart {
