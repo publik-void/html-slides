@@ -297,12 +297,13 @@ ol.upperalpha {
   suffix: "";
 }
 
-img.framed, object.img.framed {
+.framed {
   border: var(--border-thickness) solid var(--border-color);
   border-radius: 0.5em;
+  overflow: hidden;
 }
 
-div.inverse img.framed, div.inverse object.img.framed {
+div.inverse .framed {
   border-color: var(--border-color-inverse);
 }
 
