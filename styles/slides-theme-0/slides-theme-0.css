@@ -8,7 +8,7 @@
 :root {
   --of-slides: "/";
   --text-color: rgb(80 90 100);
-  --text-color-inverse: rgb(80 90 100);
+  --text-color-inverse: rgb(135 135 140);
   --border-color: rgb(215 215 215);
   --border-color-inverse: rgb(222 222 222);
   --border-thickness: 0.15em;
@@ -141,11 +141,15 @@ div.col {
   font-size: 70%;
 }
 
-.weak {
+.smaller {
+  font-size: 50%;
+}
+
+.dim {
   opacity: .5;
 }
 
-.very-weak {
+.dimmer {
   opacity: .25;
 }
 
@@ -155,6 +159,14 @@ div.col {
 
 .rjust {
   text-align: right;
+}
+
+.cjust {
+  text-align: center;
+}
+
+.just {
+  text-align: justify;
 }
 
 .debug {
