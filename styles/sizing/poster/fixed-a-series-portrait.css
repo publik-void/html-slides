@@ -1,0 +1,25 @@
+@page {
+  size: 640px calc(640px * sqrt(2));
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  font-size: calc(640px * sqrt(2) * 0.025);
+}
+
+div.poster {
+  position: relative;
+  margin: 0px;
+}
+
+div.poster {
+  width: calc(640px - 0.75em - 0.75em);
+  height: calc(640px * sqrt(2) - 0.75em - 0.75em);
+
+  padding-left:   0.75em;
+  padding-right:  0.75em;
+  padding-bottom: 0.75em;
+  padding-top:    0.75em;
+}
+

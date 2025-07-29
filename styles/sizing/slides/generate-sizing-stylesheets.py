@@ -6,6 +6,7 @@
 import textwrap
 import os
 import fractions
+import math
 
 def slide_size_and_padding(
     slide_class, slide_height_full, aspect,

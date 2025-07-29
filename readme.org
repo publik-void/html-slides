@@ -1,13 +1,4 @@
-* Simple template for HTML slides
+* Simple style template and scripts for slides, posters, etc. in HTML
 
 To be viewed via the browser (also remotely) or exported to PDF (with loss of
 any dynamic content).
-
-To render to PDF with chromium:
-#+begin_src sh
-chromium \
-  --headless=new \
-  --print-to-pdf=demo.pdf \
-  --generate-pdf-document-outline \
-  demo.html
-#+end_src

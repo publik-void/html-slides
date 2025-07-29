@@ -24,7 +24,6 @@
 div.slide {
   font-size: 1.4em;
   line-height: 1.2;
-  text-align: justify;
 
   background-image: linear-gradient(to bottom, rgb(243 243 243)   0%,
                                                rgb(255 255 255)  15%,
@@ -70,7 +69,7 @@ h1, h2, h3, header {
   text-align: start;
 }
 
-h1 {
+div.slide h1 {
   width: 90%;
   /* TODO: For some reason, using `em`/`rem`/`%` for the font-size does not
    * scale the font as expected on resizing the window */
@@ -78,21 +77,13 @@ h1 {
   text-align: center;
 }
 
-h2 {
+div.slide h2 {
   font-size: 210%;
 }
 
-:not(div.slide.section) > h2 {
-  top: 7.5%;
-}
-
-div.slide.section > h2 {
+div.slide.section h2 {
   width: 100%;
   text-align: center;
-}
-
-h1, h2 {
-  font-weight: 600;
 }
 
 h1, h2 {
@@ -103,10 +94,9 @@ div.inverse h1, div.inverse h2 {
   color: var(--heading-color-inverse);
 }
 
-div.author {
-  width: 100%;
-  font-size: 80%;
-  text-align: right;
+a {
+  color: inherit;
+  text-decoration: inherit;
 }
 
 .row {
@@ -151,75 +141,6 @@ div.author {
 
 .dimmer {
   opacity: .25;
-}
-
-.ljust {
-  text-align: left;
-}
-
-.rjust {
-  text-align: right;
-}
-
-.cjust {
-  text-align: center;
-}
-
-.just {
-  text-align: justify;
-}
-
-.jc-start {
-  justify-content: start;
-}
-
-.jc-end {
-  justify-content: end;
-}
-
-.jc-center {
-  justify-content: center;
-}
-
-.jc-space-around {
-  justify-content: space-around;
-}
-
-.jc-space-between {
-  justify-content: space-between;
-}
-
-.jc-space-evenly {
-  justify-content: space-evenly;
-}
-
-.jc-stretch {
-  justify-content: stretch;
-}
-
-.ai-start {
-  align-items: start;
-}
-
-.ai-end {
-  align-items: end;
-}
-
-.ai-center {
-  align-items: center;
-}
-
-.ai-stretch {
-  align-items: stretch;
-}
-
-.nogap {
-  gap: 0;
-}
-
-p {
-  padding: 0;
-  margin: 0;
 }
 
 ul, ol {
@@ -371,62 +292,5 @@ hr {
   border: none;
   border-radius: .125em;
   background: rgb(190, 190, 190);
-}
-
-.gantt-chart {
-  font-size: 100%;
-  font-family: "Open Sans";
-}
-
-.gantt-chart rect.frame {
-  fill: none;
-  stroke: var(--border-color);
-  stroke-width: var(--border-thickness);
-}
-
-.gantt-chart g.group-backgrounds g.past rect {
-  opacity: .15;
-}
-
-.gantt-chart g.group-backgrounds g.future rect {
-  opacity: .075;
-}
-
-.gantt-chart g.task rect {
-  stroke: var(--border-color);
-  stroke-thickness: var(--border-thickness);
-  rx: 0.2em;
-}
-
-.gantt-chart g.task text {
-}
-
-.gantt-chart g.group-names {
-  fill: #aaaaaa;
-  text-anchor: end;
-}
-
-.gantt-chart g.grid line {
-  shape-rendering: crispEdges;
-}
-
-.gantt-chart g.grid .x-axis line {
-  stroke: var(--grid-line-color);
-  stroke-opacity: var(--grid-line-opacity);
-  stroke-width: 0.1em;
-  stroke-dasharray: .5em, .2em;
-}
-
-.gantt-chart g.grid .x-axis text {
-  font-size: 0.7em;
-}
-
-.gantt-chart g.group-separators line {
-  stroke: #888888;
-  stroke-opacity: 0.2;
-}
-
-.gantt-chart g.grid path.domain {
-  display: none;
 }
 
