@@ -109,11 +109,11 @@ div.author {
   text-align: right;
 }
 
-div.row {
+.row {
   gap: 1em;
 }
 
-div.col {
+.col {
   gap: 1em;
 }
 
@@ -169,56 +169,51 @@ div.col {
   text-align: justify;
 }
 
-.debug {
-  outline: 1px red dashed;
-  background: #ff000022;
-}
-
-div.jc-start {
+.jc-start {
   justify-content: start;
 }
 
-div.jc-end {
+.jc-end {
   justify-content: end;
 }
 
-div.jc-center {
+.jc-center {
   justify-content: center;
 }
 
-div.jc-space-around {
+.jc-space-around {
   justify-content: space-around;
 }
 
-div.jc-space-between {
+.jc-space-between {
   justify-content: space-between;
 }
 
-div.jc-space-evenly {
+.jc-space-evenly {
   justify-content: space-evenly;
 }
 
-div.jc-stretch {
+.jc-stretch {
   justify-content: stretch;
 }
 
-div.ai-start {
+.ai-start {
   align-items: start;
 }
 
-div.ai-end {
+.ai-end {
   align-items: end;
 }
 
-div.ai-center {
+.ai-center {
   align-items: center;
 }
 
-div.ai-stretch {
+.ai-stretch {
   align-items: stretch;
 }
 
-div.nogap {
+.nogap {
   gap: 0;
 }
 

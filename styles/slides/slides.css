@@ -18,6 +18,11 @@ body {
   background-color: transparent;
 }
 
+.debug {
+  outline: 1px red dashed;
+  background: #ff000022;
+}
+
 a {
   color: inherit;
   text-decoration: inherit;
@@ -66,7 +71,7 @@ div.slide.image-fill > img,
   object-fit: contain;
 }
 
-div.row {
+.row {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -76,13 +81,13 @@ div.row {
   min-height: 0;
 }
 
-div.row > * {
+.row > * {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-div.col {
+.col {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -92,9 +97,30 @@ div.col {
   min-height: 0;
 }
 
-div.col > * {
+.col > * {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  /* height: 100%; */
+  /* width: auto; */
+}
+
+.row .contain {
+  width: 100%;
+  height: auto;
+}
+
+.col .contain {
+  width: auto;
+  height: 100%;
+}
+
+.contain > * {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
+.no-wrap {
+  white-space: nowrap;
+}
