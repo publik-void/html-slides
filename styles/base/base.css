@@ -120,8 +120,20 @@ div.slide:not(.section) h2 {
   object-fit: contain;
 }
 
+.row .fill {
+  height: 100%;
+}
+
+.col .fill {
+  width: 100%;
+}
+
 .row.no-gap, .col.no-gap {
   gap: 0;
+}
+
+.no-margin {
+  margin: 0;
 }
 
 .no-wrap {
@@ -189,8 +201,10 @@ div.slide:not(.section) h2 {
 }
 
 p {
-  padding: 0;
-  margin: 0;
+  margin: .6em;
 }
 
+div.slide p {
+  margin: 0;
+}
 

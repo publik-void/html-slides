@@ -62,11 +62,19 @@ div.slide.section {
   align-items: center;
 }
 
+div.poster {
+  line-height: 1.1;
+}
+
 h1, h2, h3, header {
   margin: 0px;
   font-family: "Open Sans";
   line-height: 1.2;
   text-align: start;
+}
+
+h1, h2 {
+  color: var(--heading-color);
 }
 
 div.slide h1 {
@@ -86,12 +94,28 @@ div.slide.section h2 {
   text-align: center;
 }
 
-h1, h2 {
-  color: var(--heading-color);
-}
-
 div.inverse h1, div.inverse h2 {
   color: var(--heading-color-inverse);
+}
+
+div.poster h2 {
+  color: var(--heading-color-inverse);
+  background-image: linear-gradient(to bottom, rgb(70 75 80)   0%,
+                                               rgb(70 75 80)  80%,
+                                               rgb(52 57 62) 100%);
+  border-radius: .3em;
+  padding: .3em .6em;
+  margin-bottom: .4em;
+}
+
+div.poster h3 {
+  color: var(--heading-color);
+  background-image: linear-gradient(to bottom, rgb(230 230 233)  15%,
+                                               rgb(230 230 233)  80%,
+                                               rgb(215 215 218) 100%);
+  border-radius: .3em;
+  padding: .3em .6em;
+  margin-bottom: .4em;
 }
 
 a {
@@ -127,6 +151,14 @@ a {
   font-family: "Hack";
 }
 
+.large {
+  font-size: 140%;
+}
+
+.larger {
+  font-size: 200%;
+}
+
 .small {
   font-size: 70%;
 }
@@ -152,12 +184,13 @@ ul, ol {
   margin-left: 1.5em;
 }
 
-ul, menu, dir {
-  list-style-type: disc;
-}
+/* ul, menu, dir { */
+/*   list-style-type: disc; */
+/* } */
 
-:is(dir, menu, ol, ul) :is(dir, menu, ul) {
-  list-style-type: disc;
+ul, menu, dir, :is(dir, menu, ol, ul) :is(dir, menu, ul) {
+  /* list-style-type: disc; */
+  list-style-type: "•  ";
 }
 
 li::marker {
@@ -237,6 +270,15 @@ div.inverse .framed {
 
 img.profile-photo, object.img.profile-photo {
   border-radius: 20%;
+}
+
+.boxed {
+  border: solid .075em var(--border-color);
+  border-radius: 0.5em;
+  overflow: hidden;
+  background-image: linear-gradient(to bottom, rgb(238 238 241)   0%,
+                                               rgb(247 247 250)  25%,
+                                               rgb(247 247 250) 100%);
 }
 
 table {
