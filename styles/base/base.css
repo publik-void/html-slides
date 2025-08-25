@@ -10,12 +10,20 @@ html {
   text-rendering: optimizeLegibility;
 }
 
+html.article {
+  background-color: white;
+}
+
 body {
   counter-reset: slide-number 0;
 
   display: block;
   margin: 0px;
   background-color: transparent;
+}
+
+.hide {
+  display: none;
 }
 
 .debug {
@@ -49,6 +57,10 @@ div.slide.title {
   align-items: center;
 }
 
+div.slide.headless h2, div.slide.headless h3 {
+  display: none;
+}
+
 div.slide.image-fill {
   display: block flow-root;
 }
@@ -61,7 +73,7 @@ div.slide.image-fill > img,
   object-fit: contain;
 }
 
-div.slide:not(.section) h2 {
+div.slide h3 {
   position: absolute;
   top: 7.5%;
   margin-block-start: 0;
@@ -200,11 +212,12 @@ div.slide:not(.section) h2 {
   align-items: stretch;
 }
 
-p {
-  margin: .6em;
-}
-
 div.slide p {
   margin: 0;
+}
+
+div.slide h1, div.slide h2, div.slide h3,
+    div.poster h1, div.poster h2, div.poster h3 {
+  margin: 0px;
 }
 

@@ -1,0 +1,121 @@
+"use strict";
+
+var HtmlSlides = HtmlSlides || {};
+
+HtmlSlides.Control = {};
+
+// A true mod function.
+// Works for integer inputs and y > 0. Probably improvable.
+HtmlSlides.Control.mod = function(x, y) {
+  if (x >= 0) {
+    return x % y;
+  } else {
+    const a = y + x % y;
+    if (a == y) {
+      return 0;
+    } else {
+      return a;
+    }
+  }
+}
+
+HtmlSlides.Control.createSlideAnchors = function() {
+  const divs = document.querySelectorAll('div.slide');
+
+  const anchors = [];
+  const sections = [];
+
+  divs.forEach((div, i) => {
+    const anchor = document.createElement('a');
+
+    div.parentNode.insertBefore(anchor, div);
+    anchor.appendChild(div);
+
+    anchor.id = (i + 1).toString();
+
+    if (div.classList.contains("section")) {
+      anchor.classList.add("section");
+      sections.push(i + 1);
+    }
+
+    anchors.push(anchor);
+  });
+
+  // console.log(anchors);
+  // console.log(sections);
+  return [anchors, sections];
+}
+
+HtmlSlides.Control.getCurrentAnchor = function() {
+  const fragment = window.location.hash;
+  let i = 1;
+  if (fragment.startsWith("#")) {
+    i = parseInt(fragment.substring(1));
+    if (isNaN(i)) {
+      i = 1;
+    }
+  }
+  return i;
+}
+
+HtmlSlides.Control.scrollAnchors = function(nSlides, offset) {
+  if (nSlides > 0) {
+    const iCurrent = HtmlSlides.Control.getCurrentAnchor();
+    const iNext = HtmlSlides.Control.mod(iCurrent - 1 + offset, nSlides) + 1;
+    window.location.hash = "#" + iNext;
+  }
+}
+
+HtmlSlides.Control.scrollSections = function(sections, offset) {
+  if (sections.length > 0) {
+    const iCurrent = HtmlSlides.Control.getCurrentAnchor();
+    const j = HtmlSlides.Control.mod(
+      Math.max(sections.findIndex(i => i > iCurrent), 0) - 1, sections.length);
+    const jNext = HtmlSlides.Control.mod(j + (sections[j] == iCurrent ||
+      offset > 0 ? 0 : 1) + offset, sections.length);
+    window.location.hash = "#" + sections[jNext];
+  }
+}
+
+HtmlSlides.Control.setup = function() {
+  document.addEventListener("DOMContentLoaded", function() {
+    const [anchors, sections] = HtmlSlides.Control.createSlideAnchors();
+    HtmlSlides.Control.nSlides = anchors.length;
+    HtmlSlides.Control.sections = sections;
+
+    document.addEventListener("keydown", function(e) {
+      let offset = 0;
+      let mode = "anchors";
+      if (e.key == "ArrowLeft" || e.key == "k") {
+        offset = -1;
+      } else if (e.key == "ArrowRight" || e.key == "j") {
+        offset = 1;
+      } else if (e.key == "h") {
+        offset = -1;
+        mode = "sections";
+      } else if (e.key == "l") {
+        offset = 1;
+        mode = "sections";
+      }
+
+      if (offset != 0) {
+        if (mode == "anchors")
+          HtmlSlides.Control.scrollAnchors(HtmlSlides.Control.nSlides, offset);
+        else if (mode == "sections")
+          HtmlSlides.Control.scrollSections(
+            HtmlSlides.Control.sections, offset);
+
+        setTimeout(function () {
+          document.body.classList.add("hide-cursor");
+        }, 250);
+      }
+    });
+
+    document.addEventListener("mousemove", function() {
+      document.body.classList.remove("hide-cursor");
+    });
+  });
+}
+
+HtmlSlides.Control.setup();
+

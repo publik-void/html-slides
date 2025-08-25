@@ -5,8 +5,7 @@ var HtmlSlides = HtmlSlides || {};
 HtmlSlides.numberOfSlides = {};
 
 HtmlSlides.numberOfSlides.get = function() {
-  const divs = document.querySelectorAll('div.slide');
-  return divs.length;
+  return document.querySelectorAll('div.slide').length;
 }
 
 HtmlSlides.numberOfSlides.addAsStyleVar = function(n) {

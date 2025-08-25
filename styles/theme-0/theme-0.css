@@ -10,7 +10,7 @@
   --text-color: rgb(80 90 100);
   --text-color-inverse: rgb(135 135 140);
   --border-color: rgb(215 215 215);
-  --border-color-inverse: rgb(222 222 222);
+  --border-color-inverse: rgb(170 170 175);
   --border-thickness: 0.15em;
   --heading-color: rgb(70 70 70);
   --heading-color-inverse: rgb(165 165 170);
@@ -19,6 +19,10 @@
 
   font-family: "Noto Serif";
   color: var(--text-color);
+}
+
+.article body {
+  margin: 1em;
 }
 
 div.slide {
@@ -39,7 +43,7 @@ div.slide.inverse {
                                                rgb(62 67 72) 100%);
 }
 
-div:not(.title):not(.numberless).slide::after {
+div:not(.title):not(.no-number).slide::after {
   content: counter(slide-number) var(--of-slides) var(--n-slides);
 }
 
@@ -66,15 +70,22 @@ div.poster {
   line-height: 1.1;
 }
 
-h1, h2, h3, header {
-  margin: 0px;
+div.poster p {
+  margin: .6em;
+}
+
+h1, h2, h3 {
   font-family: "Open Sans";
   line-height: 1.2;
   text-align: start;
 }
 
-h1, h2 {
+h1, h2, h3 {
   color: var(--heading-color);
+}
+
+div.slide.inverse h1, div.slide.inverse h2, div.slide.inverse h3 {
+  color: var(--heading-color-inverse);
 }
 
 div.slide h1 {
@@ -85,17 +96,13 @@ div.slide h1 {
   text-align: center;
 }
 
-div.slide h2 {
+div.slide h2, div.slide h3 {
   font-size: 210%;
 }
 
-div.slide.section h2 {
+div.slide h2 {
   width: 100%;
   text-align: center;
-}
-
-div.inverse h1, div.inverse h2 {
-  color: var(--heading-color-inverse);
 }
 
 div.poster h2 {
@@ -109,7 +116,7 @@ div.poster h2 {
 }
 
 div.poster h3 {
-  color: var(--heading-color);
+  /* color: var(--heading-color); */
   background-image: linear-gradient(to bottom, rgb(230 230 233)  15%,
                                                rgb(230 230 233)  80%,
                                                rgb(215 215 218) 100%);
@@ -118,7 +125,7 @@ div.poster h3 {
   margin-bottom: .4em;
 }
 
-a {
+div.slide a, div.poster a {
   color: inherit;
   text-decoration: inherit;
 }
@@ -165,6 +172,10 @@ a {
 
 .smaller {
   font-size: 50%;
+}
+
+.smallest {
+  font-size: 33%;
 }
 
 .dim {
@@ -258,13 +269,17 @@ ol.upperalpha {
   suffix: "";
 }
 
+.padded {
+  padding: .5em;
+}
+
 .framed {
   border: var(--border-thickness) solid var(--border-color);
   border-radius: 0.5em;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
-div.inverse .framed {
+.inverse .framed {
   border-color: var(--border-color-inverse);
 }
 
@@ -275,7 +290,7 @@ img.profile-photo, object.img.profile-photo {
 .boxed {
   border: solid .075em var(--border-color);
   border-radius: 0.5em;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-image: linear-gradient(to bottom, rgb(238 238 241)   0%,
                                                rgb(247 247 250)  25%,
                                                rgb(247 247 250) 100%);
@@ -294,7 +309,7 @@ table, table th, table td {
   border: solid .075em var(--border-color);
 }
 
-div.inverse table, div.inverse table th, div.inverse table td {
+.inverse table, .inverse table th, .inverse table td {
   border-color: var(--border-color-inverse);
 }
 
