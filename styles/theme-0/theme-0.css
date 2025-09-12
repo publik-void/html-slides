@@ -70,8 +70,12 @@ div.poster {
   line-height: 1.1;
 }
 
-div.poster p {
+div.poster p, {
   margin: .6em;
+}
+
+.article p {
+  margin-top: .6em;
 }
 
 h1, h2, h3 {
@@ -235,6 +239,14 @@ ul.hence li::marker {
 /* li.hence::marker { */
 /*   content: "\2192"; /1* "→" *1/ */
 /* } */
+
+ul.checkmark {
+  list-style-type: "\2713  ";
+}
+
+ul.crossmark {
+  list-style-type: "\2717  ";
+}
 
 ol.arabic {
   list-style-type: decimalsonly;
