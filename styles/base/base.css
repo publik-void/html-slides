@@ -23,7 +23,8 @@ body {
 }
 
 .hide {
-  display: none;
+  /* display: none; */
+  visibility: hidden; /* keeps element's box */
 }
 
 .debug {

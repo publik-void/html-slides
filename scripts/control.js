@@ -1,5 +1,7 @@
 "use strict";
 
+// vim: foldmethod=marker
+
 // Slide control script taken from ChatGPT and slightly adapted
 // -----------------------------------------------------------------------------
 
@@ -7,13 +9,14 @@
 var HtmlSlides = (typeof HtmlSlides !== "undefined") ? HtmlSlides : {};
 HtmlSlides.Control = HtmlSlides.Control || {};
 
-/* ============================ Utilities ============================= */
+// ============================ Utilities ============================= {{{1
 
 HtmlSlides.Control.Util = HtmlSlides.Control.Util || (function() {
   function mod(x, y) {
     // true mathematical modulo for y > 0
     return ((x % y) + y) % y;
   }
+
   function isEditableTarget(e) {
     const t = e.target;
     if (!t) return false;
@@ -21,13 +24,66 @@ HtmlSlides.Control.Util = HtmlSlides.Control.Util || (function() {
     return t.isContentEditable ||
       tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
   }
-  return { mod, isEditableTarget };
+
+  // Get an array of colums of the `table`, where columns are arrays of cells
+  // visually starting in that column.
+  function bucketCellsByStartColumn(table) {
+    const rows = Array.from(table.querySelectorAll("tr"))
+
+    // cols[c] = array of cells whose visual start column is c
+    const cols = [];
+    // For each column: rows remaining occupied by a rowspan from above
+    const downSpan = [];
+
+    const bumpPastRowspans = (col) => {
+      while ((downSpan[col] ?? 0) > 0) col += 1;
+      return col;
+    }
+
+    for (const tr of rows) {
+      let col = bumpPastRowspans(0);
+
+      const cells = Array.from(tr.children).filter((n) =>
+        n instanceof HTMLElement && (n.tagName === "TD" || n.tagName === "TH"));
+
+      for (const cell of cells) {
+        col = bumpPastRowspans(col);
+
+        const startCol = col;
+        const colspan = Math.max(1, Number(cell.getAttribute("colspan")) || 1);
+        const rowspan = Math.max(1, Number(cell.getAttribute("rowspan")) || 1);
+
+        (cols[startCol] ??= []).push(cell);
+
+        if (rowspan > 1) {
+          for (let c = startCol; c < startCol + colspan; c += 1) {
+            downSpan[c] = Math.max(downSpan[c] ?? 0, rowspan - 1);
+          }
+        }
+
+        col = startCol + colspan;
+      }
+
+      for (let c = 0; c < downSpan.length; c += 1) {
+        if ((downSpan[c] ?? 0) > 0) downSpan[c] -= 1;
+      }
+    }
+
+    // Fill missing columns with empty arrays
+    for (let c = 0; c < cols.length; c += 1) {
+      cols[c] ??= [];
+    }
+
+    return cols;
+  }
+
+  return { mod, isEditableTarget, bucketCellsByStartColumn };
 })();
 
-/* ====================== Anchor & Slide indexing ===================== */
+// ====================== Anchor & Slide indexing ===================== {{{1
 
-HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(U) {
-  const cfg = {
+HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(Util) {
+  const config = {
     slideSelector: "div.slide",
     sectionClass: "section",
     titleClass: "title",
@@ -38,27 +94,27 @@ HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(U) {
   let sections = [];  // indices (1-based) of section-start slides
 
   function ensureAnchors() {
-    slides = Array.from(document.querySelectorAll(cfg.slideSelector));
+    slides = Array.from(document.querySelectorAll(config.slideSelector));
     sections = [];
 
     slides.forEach((slide, i) => {
       const n = i + 1;
-      const id = cfg.idPrefix + String(n);
+      const id = config.idPrefix + String(n);
 
       // If parent is an <a>, put id on parent; else put id on the slide.
       const p = slide.parentElement;
       if (p && p.tagName && p.tagName.toUpperCase() === "A") {
         p.id = p.id || id;
         // mirror the 'section' marker for convenience
-        if (slide.classList.contains(cfg.sectionClass)) {
-          p.classList.add(cfg.sectionClass);
+        if (slide.classList.contains(config.sectionClass)) {
+          p.classList.add(config.sectionClass);
         }
       } else {
         if (!slide.id) slide.id = id;
         // (No need to wrap: any element with id can be a target)
       }
 
-      if (slide.classList.contains(cfg.sectionClass)) {
+      if (slide.classList.contains(config.sectionClass)) {
         sections.push(n);
       }
     });
@@ -69,8 +125,8 @@ HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(U) {
 
   function getCurrentIndex() {
     const h = (window.location.hash || "").replace("#", "");
-    const n = parseInt(h, 10);
-    return (!Number.isNaN(n) && n >= 1 && n <= slides.length) ? n : 1;
+    const i = parseInt(h, 10);
+    return (!Number.isNaN(i) && i >= 1 && i <= slides.length) ? i : 1;
   }
 
   function goTo(n) {
@@ -82,7 +138,7 @@ HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(U) {
     const m = getCount();
     if (!m) return;
     const cur = getCurrentIndex();
-    const next = U.mod(cur - 1 + offset, m) + 1;
+    const next = Util.mod(cur - 1 + offset, m) + 1;
     goTo(next);
   }
 
@@ -91,12 +147,18 @@ HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(U) {
     const cur = getCurrentIndex();
     // index of first section strictly greater than current
     const pos = sections.findIndex(i => i > cur);
-    const j = U.mod(Math.max(pos, 0) - 1, sections.length);
+    const j = Util.mod(Math.max(pos, 0) - 1, sections.length);
     const same = (sections[j] === cur);
-    const jNext = U.mod(j + (same || offset > 0 ? 0 : 1) + offset,
+    const jNext = Util.mod(j + (same || offset > 0 ? 0 : 1) + offset,
                         sections.length);
     goTo(sections[jNext]);
   }
+
+  function getSlides() { return slides; }
+  function getSections() { return sections; }
+
+  function getCurrentSlide() { return slides[getCurrentIndex() - 1]; }
+  // could also do a getCurrentSection() …
 
   return {
     ensureAnchors,
@@ -106,30 +168,210 @@ HtmlSlides.Control.Anchors = HtmlSlides.Control.Anchors || (function(U) {
     goTo,
     goToOffset,
     goToSectionOffset,
-    _config: cfg
+    getSlides,
+    getSections,
+    getCurrentSlide,
+    config
   };
 })(HtmlSlides.Control.Util);
 
-/* =========================== Key Controls =========================== */
+// ======================== Incremental reveal ======================== {{{1
 
-HtmlSlides.Control.Keys = HtmlSlides.Control.Keys || (function(U, A) {
-  const cfg = {
+HtmlSlides.Control.IncrementalReveal = HtmlSlides.Control.IncrementalReveal ||
+    (function(Util, Anchors) {
+  const config = {
+    classNameUnrevealed: "unrevealed", // internal class for hidden elements
+    classNameIncrement: "increment", // explicit incr. reveal elements
+    classNameNoIncrement: "no-increment", // exclude element from incr. reveal
+    classNameNoReveal: "no-reveal", // disable incr. reveal on the slide
+    classNameRevealFirst: "reveal-first", // reveal the slide's first element
+    classNameRevealColwise: "reveal-colwise", // reveal table column-wise
+    classNameIncrementHeaders: "increment-headers", // don't merge table headers
+  };
+
+  function injectStylesOnce() {
+    if (document.getElementById("incrementalRevealStyles")) return;
+    const style = document.createElement("style");
+    style.id = "incrementalRevealStyles";
+    style.textContent =
+      // `.${config.classNameUnrevealed} { visibility: hidden; }`;
+      `.${config.classNameUnrevealed} { opacity: 10%; }`;
+    document.head.appendChild(style);
+  }
+
+  function getChildIncrements(node, list) {
+    // Can't put a class on a `Node.TEXT_NODE`, so iterate over elements only.
+    for (let child = node.firstElementChild;
+        child;
+        child = child.nextElementSibling) {
+      if (child.classList.contains(config.classNameNoIncrement)) continue;
+      if (child.tagName === "DIV" || child.tagName === "A") {
+        getChildIncrements(child, list);
+      } else if (child.tagName === "P") {
+        list.push([child]);
+      } else if (child.tagName === "IMG") {
+        list.push([child]);
+      } else if (child.tagName === "UL" || child.tagName === "OL") {
+        getChildIncrements(child, list);
+      } else if (child.tagName === "LI") {
+        const subs = child.querySelectorAll(":scope > ul, :scope > ol");
+        if (subs.length === 0) list.push([child]);
+        else for (const sub in subs) getChildIncrements(sub, list);
+      } else if (child.tagName === "TABLE") {
+        let ess;
+        if (child.classList.contains(config.classNameRevealColwise)) {
+          ess = Util.bucketCellsByStartColumn(child);
+        } else {
+          ess = getChildIncrements(child, []);
+        }
+
+        if (child.classList.contains(config.classNameIncrementHeaders)) {
+          for (const es of ess) list.push(es);
+        } else {
+          // Merge header-only rows/cols with the first "payload" row/col
+          let headerOnlySoFar = true;
+          const esHead = [];
+          const essTail = [];
+          for (const es of ess) {
+            if (headerOnlySoFar) for (const e of es) esHead.push(e);
+            else essTail.push(es);
+            const headerOnly = es.every(e => e.tagName === "TH");
+            headerOnlySoFar &&= headerOnly;
+          }
+
+          if (esHead.length !== 0) list.push(esHead);
+          for (const es of essTail) list.push(es);
+        }
+      } else if (child.tagName === "THEAD" || child.tagName === "TBODY") {
+        getChildIncrements(child, list);
+      } else if (child.tagName === "TR") {
+        const cells = child.querySelectorAll(":scope > th, :scope > td");
+        list.push(Array.from(cells));
+      }
+    }
+
+    if (list.length <= 1) return [];
+
+    return list;
+  }
+
+  function getIncrements(slide) {
+    if (slide.classList.contains(config.classNameNoReveal)) return [];
+
+    // If the slide is in to-do mode
+    if (slide.querySelectorAll(".todo").length > 0) return [];
+
+    const explicitIncrementElements =
+      slide.querySelectorAll(`.${config.classNameIncrement}`);
+    if (explicitIncrementElements.length > 0) {
+      return Array.from(explicitIncrementElements, e => [e]);
+    }
+
+    return getChildIncrements(slide, []);
+  }
+
+  function resetSlideRevelation(slide, reveal) {
+    const increments = getIncrements(slide);
+    if (reveal) {
+      for (const es of increments) {
+        for (const e of es) {
+          e.classList.remove(config.classNameUnrevealed);
+        }
+      }
+    } else {
+      const revealFirst = slide.classList.contains(config.classNameRevealFirst);
+      let isFirst = revealFirst;
+      for (const es of increments) {
+        if (isFirst) {
+          for (const e of es) {
+            e.classList.remove(config.classNameUnrevealed);
+          }
+          isFirst = false;
+        } else {
+          for (const e of es) {
+            e.classList.add(config.classNameUnrevealed);
+          }
+        }
+      }
+    }
+  }
+
+  function resetRevelation(reveal) {
+    for (const slide of Anchors.getSlides()) {
+      resetSlideRevelation(slide, reveal);
+    }
+  }
+
+  function incrementSlideRevelation(slide, prev) {
+    const increments = getIncrements(slide);
+
+    let i = 0;
+    for (const es of increments) {
+      if (es.length !== 0) {
+        const e = es[0];
+        if (e.classList.contains(config.classNameUnrevealed)) break;
+      }
+      i += 1;
+    }
+
+    if (prev) i -= 1;
+
+    if (i >= 0 && i < increments.length) {
+      for (const e of increments[i]) {
+        if (prev) e.classList.add(config.classNameUnrevealed);
+        else e.classList.remove(config.classNameUnrevealed);
+      }
+    }
+  }
+
+  function incrementCurrentSlideRevelation(prev) {
+    const slide = Anchors.getCurrentSlide();
+    return incrementSlideRevelation(slide, prev);
+  }
+
+  function init() {
+    injectStylesOnce();
+  }
+
+  return {
+    resetRevelation,
+    incrementCurrentSlideRevelation,
+    init,
+    config
+  };
+})(HtmlSlides.Control.Util, HtmlSlides.Control.Anchors);
+
+// =========================== Key Controls =========================== {{{1
+
+HtmlSlides.Control.Keys = HtmlSlides.Control.Keys ||
+    (function(Util, Anchors, IncrementalReveal) {
+  const config = {
     // main slide nav
     prevSlideKeys: ["ArrowLeft", "k"],
     nextSlideKeys: ["ArrowRight", "j"],
+
     // section jumps
-    prevSectionKeys: ["h"],
-    nextSectionKeys: ["l"],
+    prevSectionKeys: ["i"],
+    nextSectionKeys: ["o"],
+
+    // piecewise revelation
+    prevIncrementKeys: ["h"],
+    nextIncrementKeys: ["l"],
+
+    // revelation reset
+    resetRevealKeys: ["r"],
+    resetUnrevealKeys: ["R"],
+
     // jump to begin or end
     topSlideKeys: ["g"],
-    bottomSlideKeys: ["G"]
+    bottomSlideKeys: ["G"],
   };
 
   let installed = false;
   let hideTimer = null;
 
   function onKeyDown(e) {
-    if (U.isEditableTarget(e)) return;
+    if (Util.isEditableTarget(e)) return;
     // If Navigator overlay is open, don't handle base keys here
     if (HtmlSlides.Control.Navigator &&
         HtmlSlides.Control.Navigator.isOpen &&
@@ -138,26 +380,30 @@ HtmlSlides.Control.Keys = HtmlSlides.Control.Keys || (function(U, A) {
     }
 
     const k = e.key;
-    let handled = false;
+    let handled = true;
 
-    if (cfg.prevSlideKeys.includes(k)) {
-      A.goToOffset(-1);
-      handled = true;
-    } else if (cfg.nextSlideKeys.includes(k)) {
-      A.goToOffset(1);
-      handled = true;
-    } else if (cfg.prevSectionKeys.includes(k)) {
-      A.goToSectionOffset(-1);
-      handled = true;
-    } else if (cfg.nextSectionKeys.includes(k)) {
-      A.goToSectionOffset(1);
-      handled = true;
-    } else if (cfg.topSlideKeys.includes(k)) {
-      A.goTo(1);
-      handled = true;
-    } else if (cfg.bottomSlideKeys.includes(k)) {
-      A.goTo(A.getCount());
-      handled = true;
+    if (config.prevSlideKeys.includes(k)) {
+      Anchors.goToOffset(-1);
+    } else if (config.nextSlideKeys.includes(k)) {
+      Anchors.goToOffset(1);
+    } else if (config.prevSectionKeys.includes(k)) {
+      Anchors.goToSectionOffset(-1);
+    } else if (config.nextSectionKeys.includes(k)) {
+      Anchors.goToSectionOffset(1);
+    } else if (config.topSlideKeys.includes(k)) {
+      Anchors.goTo(1);
+    } else if (config.bottomSlideKeys.includes(k)) {
+      Anchors.goTo(Anchors.getCount());
+    } else if (config.prevIncrementKeys.includes(k)) {
+      IncrementalReveal.incrementCurrentSlideRevelation(true);
+    } else if (config.nextIncrementKeys.includes(k)) {
+      IncrementalReveal.incrementCurrentSlideRevelation(false);
+    } else if (config.resetRevealKeys.includes(k)) {
+      IncrementalReveal.resetRevelation(true);
+    } else if (config.resetUnrevealKeys.includes(k)) {
+      IncrementalReveal.resetRevelation(false);
+    } else {
+      handled = false;
     }
 
     if (handled) {
@@ -181,13 +427,15 @@ HtmlSlides.Control.Keys = HtmlSlides.Control.Keys || (function(U, A) {
     document.addEventListener("mousemove", onMouseMove);
   }
 
-  return { init, _config: cfg };
-})(HtmlSlides.Control.Util, HtmlSlides.Control.Anchors);
+  return { init, config };
+})(HtmlSlides.Control.Util, HtmlSlides.Control.Anchors,
+    HtmlSlides.Control.IncrementalReveal);
 
-/* ============================ Navigator ============================= */
+// ============================ Navigator ============================= {{{1
 
-HtmlSlides.Control.Navigator = HtmlSlides.Control.Navigator || (function(A, U) {
-  const cfg = {
+HtmlSlides.Control.Navigator = HtmlSlides.Control.Navigator ||
+    (function(Util, Anchors) {
+  const config = {
     openKey: "/",                 // toggle
     slideSelector: "div.slide",
     headingSelector: "h1,h2,h3",
@@ -303,22 +551,24 @@ background:#e0e0e0;border-radius:2px}
   }
 
   function headingInfo(slide) {
-    const h = slide.querySelector(cfg.headingSelector);
+    const h = slide.querySelector(config.headingSelector);
     if (h) {
       const tag = (h.tagName || "").toLowerCase(); // h1,h2,h3
       const lvl = tag === "h1" ? 1 : (tag === "h2" ? 2 : 3);
-      const txt = (h.textContent || "").trim() || cfg.noTitleText;
+      const txt = (h.textContent || "").trim() || config.noTitleText;
       return { title: txt, level: lvl };
     }
     // fallback to classes if no heading
-    if (slide.classList.contains("title")) return { title: cfg.noTitleText, level: 1 };
-    if (slide.classList.contains("section")) return { title: cfg.noTitleText, level: 2 };
-    return { title: cfg.noTitleText, level: 3 };
+    if (slide.classList.contains("title"))
+      return { title: config.noTitleText, level: 1 };
+    if (slide.classList.contains("section"))
+      return { title: config.noTitleText, level: 2 };
+    return { title: config.noTitleText, level: 3 };
   }
 
   function populateList() {
     listEl.innerHTML = "";
-    const slides = Array.from(document.querySelectorAll(cfg.slideSelector));
+    const slides = Array.from(document.querySelectorAll(config.slideSelector));
 
     slides.forEach((slide, i) => {
       const n = i + 1;
@@ -345,13 +595,13 @@ background:#e0e0e0;border-radius:2px}
       item.appendChild(title);
       item.addEventListener("click", () => {
         closeOverlay();
-        A.goTo(n); // use the centralized navigation
+        Anchors.goTo(n); // use the centralized navigation
       });
 
       listEl.appendChild(item);
     });
 
-    const cur = A.getCurrentIndex() || 1;
+    const cur = Anchors.getCurrentIndex() || 1;
     selectVisibleIndex(findVisibleIndexForNumber(cur));
   }
 
@@ -379,7 +629,7 @@ background:#e0e0e0;border-radius:2px}
       el.style.display = (q === "" || hay.includes(q)) ? "" : "none";
     });
 
-    const cur = A.getCurrentIndex() || 1;
+    const cur = Anchors.getCurrentIndex() || 1;
     const tgt = findVisibleIndexForNumber(cur);
     if (tgt !== -1) selectVisibleIndex(tgt);
     else selectVisibleIndex(0);
@@ -408,7 +658,7 @@ background:#e0e0e0;border-radius:2px}
     const vis = visibleItems();
     if (!vis.length) return;
     if (selectedIdx < 0) selectedIdx = 0;
-    const next = U.mod(selectedIdx + d, vis.length);
+    const next = Util.mod(selectedIdx + d, vis.length);
     selectVisibleIndex(next);
   }
 
@@ -434,7 +684,7 @@ background:#e0e0e0;border-radius:2px}
       if (selectedIdx >= 0 && vis[selectedIdx]) {
         const n = parseInt(vis[selectedIdx].dataset.index, 10);
         closeOverlay();
-        A.goTo(n);
+        Anchors.goTo(n);
       }
     } else if (k === "Escape") {
       e.preventDefault(); e.stopPropagation();
@@ -443,8 +693,8 @@ background:#e0e0e0;border-radius:2px}
   }
 
   function onGlobalKey(e) {
-    if (U.isEditableTarget(e)) return;
-    if (e.key === cfg.openKey) {
+    if (Util.isEditableTarget(e)) return;
+    if (e.key === config.openKey) {
       e.preventDefault();
       if (open) closeOverlay();
       else openOverlay();
@@ -459,14 +709,15 @@ background:#e0e0e0;border-radius:2px}
     document.addEventListener("keydown", onGlobalKey);
   }
 
-  return { init, isOpen, _config: cfg };
-})(HtmlSlides.Control.Anchors, HtmlSlides.Control.Util);
+  return { init, isOpen, config };
+})(HtmlSlides.Control.Util, HtmlSlides.Control.Anchors);
 
-/* ============================ Bootstrap ============================= */
+// ============================ Bootstrap ============================= {{{1
 
 (function bootstrap() {
   function start() {
     HtmlSlides.Control.Anchors.ensureAnchors();
+    HtmlSlides.Control.IncrementalReveal.init();
     HtmlSlides.Control.Keys.init();
     HtmlSlides.Control.Navigator.init();
   }
