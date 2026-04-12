@@ -377,3 +377,7 @@ hr {
   background: rgb(190, 190, 190);
 }
 
+.code-comment {
+  color: cornflowerblue;
+  font-style: italic;
+}
