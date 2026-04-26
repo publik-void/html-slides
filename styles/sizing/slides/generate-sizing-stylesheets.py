@@ -108,7 +108,8 @@ for mode, width, height in (
     ("fit-height",    4,   3),
     (     "fixed", 1280, 720),
     (     "fixed", 1280, 800),
-    (     "fixed", 1280, 960)):
+    (     "fixed", 1280, 960),
+    (     "fixed", 1920, 1080)):
   file_name, file_content = sizing_stylesheet(mode, width, height)
   file_path = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), file_name)
