@@ -78,6 +78,7 @@ div.slide.headless h2, div.slide.headless h3 {
 
 div.slide.image-fill {
   display: block flow-root;
+  text-align: center;
 }
 
 div.slide.image-fill > img,
