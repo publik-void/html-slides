@@ -57,7 +57,7 @@ HtmlSlides.Control.Util = HtmlSlides.Control.Util || (function() {
 
         if (rowspan > 1) {
           for (let c = startCol; c < startCol + colspan; c += 1) {
-            downSpan[c] = Math.max(downSpan[c] ?? 0, rowspan - 1);
+            downSpan[c] = Math.max(downSpan[c] ?? 0, rowspan);
           }
         }
 
